@@ -20,5 +20,6 @@ from todo import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/todos', views.Todos.as_view())
+    path('api/todos', views.Todos.as_view()),
+    path('api/signup', views.signup),
 ]
