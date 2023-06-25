@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'todo',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 
@@ -58,6 +59,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:63342',
 ]
 
 ROOT_URLCONF = 'todo_api.urls'
