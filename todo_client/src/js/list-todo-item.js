@@ -18,59 +18,55 @@ TodoSection.appendChild(TodoList)
 
 const API = 'http://localhost:8000/api/'
 
-function renderTodos(data = []) {
-  const todoList = [...data]
+function renderTodos(todoList = []) {
   const todos = todoList.map((todo) => createTodoItem(todo))
   TodoList.replaceChildren(...todos)
+  renderTodosInfo(todoList)
 }
 
-function getTodos ()  {
-    return fetch(API + 'todos', {
-        headers: {
-            Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-        },
-    })
-        .then((res) => res.json())
-        .then((data) => data)
-        .catch((err) => console.log(err))
+function getTodos() {
+  return fetch(API + 'todos', {
+    headers: {
+      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => data)
+    .catch((err) => console.log(err))
 }
 
-
-function addTodo (todo) {
-    return fetch(API + 'todos', {
-        method: 'POST',
-        headers: {
-            Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(todo),
-    }).catch((err) => console.log(err))
+function addTodo(todo) {
+  return fetch(API + 'todos', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(todo),
+  }).catch((err) => console.log(err))
 }
 
-
-function deleteTodo (id) {
-    return  fetch(API + 'todos/' + id, {
-        method: 'DELETE',
-        headers: {
-            Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-            'Content-Type': 'application/json',
-        },
-    }).catch((err) => console.log(err))
+function deleteTodo(id) {
+  return fetch(API + 'todos/' + id, {
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
+      'Content-Type': 'application/json',
+    },
+  }).catch((err) => console.log(err))
 }
 
-
-function completeTodo (id)  {
-    return  fetch(API + 'todos/' + id + '/complete', {
-        method: 'PUT',
-        headers: {
-            Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-            'Content-Type': 'application/json',
-        },
-    }).catch((err) => console.log(err))
+function completeTodo(id) {
+  return fetch(API + 'todos/' + id + '/complete', {
+    method: 'PUT',
+    headers: {
+      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
+      'Content-Type': 'application/json',
+    },
+  }).catch((err) => console.log(err))
 }
 
-
-function init  () {
+function init() {
   getTodos().then((data) => renderTodos(data))
 }
 
