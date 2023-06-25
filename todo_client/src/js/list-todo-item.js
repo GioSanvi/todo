@@ -32,6 +32,16 @@ const getTodos = () =>
     .then((data) => data)
     .catch((err) => console.log(err))
 
+const addTodo = (todo) =>
+  fetch('http://localhost:8000/api/todos', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(todo),
+  }).catch((err) => console.log(err))
+
 const init = () => {
   getTodos().then((data) => renderTodos(data))
 }

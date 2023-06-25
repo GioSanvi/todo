@@ -20,16 +20,7 @@ Form.addEventListener('submit', function (e) {
   const value = Input.value
 
   if (value.trim()) {
-    fetch('http://localhost:8000/api/todos', {
-      method: 'POST',
-      headers: {
-        Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ title: value, completed: false }),
-    })
-      .then(() => init())
-      .catch((err) => console.log(err))
+    addTodo({ title: value, completed: false }).then(() => init())
   }
 
   Input.value = ''
