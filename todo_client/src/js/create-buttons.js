@@ -5,21 +5,25 @@ function createCheckBox(todo) {
   CheckBox.checked = todo.completed
 
   CheckBox.addEventListener('click', function () {
-    CheckBox.parentNode.setAttribute('data-todo', !todo.completed)
+    completeTodo(todo.id).then(() => {
+      CheckBox.parentNode.setAttribute('data-todo', !todo.completed)
+      init()
+    })
   })
   return CheckBox
 }
 
-function createRemoveButton() {
+function createRemoveButton(todo) {
   const Cross = document.createElement('span')
   Cross.setAttribute('class', 'remove-btn')
   Cross.textContent = 'X'
 
   Cross.addEventListener('click', function (e) {
     const Parent = e.target.parentNode
-    Parent.parentNode.classList.add('remove-todo')
-
-    // setTimeout(() => renderTodos(), 1000)
+    deleteTodo(todo.id).then(() => {
+      Parent.parentNode.classList.add('remove-todo')
+      init()
+    })
   })
 
   return Cross

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status, permissions
 from rest_framework.authtoken.models import Token
@@ -19,6 +19,35 @@ class Todos(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class TodosDelete(generics.DestroyAPIView):
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        todo = Todo.objects.filter(pk=kwargs['pk'], user=self.request.user)
+        if todo.exists():
+            self.destroy(request, *args, **kwargs)
+            return JsonResponse({'message': 'todo deleted'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return JsonResponse({'error': 'todo does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TodosComplete(generics.UpdateAPIView):
+    serializer_class = TodoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        todo = get_object_or_404(Todo, pk=kwargs['pk'], user=self.request.user)
+        if todo is not None:
+            todo.completed = not todo.completed
+            todo.save()
+            return JsonResponse({'message': 'todo completed'}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return JsonResponse({'error': 'todo does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Auth routes
 @csrf_exempt
