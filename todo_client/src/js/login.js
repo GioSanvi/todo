@@ -10,6 +10,7 @@ function renderLoginForm() {
   USERNAME_FIELD.setAttribute('class', 'todo-input')
   PASSWORD_FIELD.setAttribute('class', 'todo-input')
   PASSWORD_FIELD.setAttribute('type', 'password')
+  PASSWORD_FIELD.setAttribute('autocomplete', 'off')
   USERNAME_FIELD.setAttribute('placeholder', 'Username')
   PASSWORD_FIELD.setAttribute('placeholder', 'Password')
 

@@ -49,7 +49,21 @@ function reload() {
   window.location.reload()
 }
 
-function renderTodos(todoList = []) {
+function fetchUrl(url, data = {}) {
+  const user = getUser()
+  const token = user ? user.token : ''
+
+  return fetch(url, {
+    headers: {
+      Authorization: 'Token ' + token,
+      'Content-Type': 'application/json',
+    },
+    ...data,
+  })
+}
+
+function renderTodos(data = []) {
+  const todoList = Array.isArray(data) ? data : []
   addTodoForm()
   const todos = todoList.map((todo) => createTodoItem(todo))
   TodoList.replaceChildren(...todos)
@@ -57,53 +71,40 @@ function renderTodos(todoList = []) {
 }
 
 function getTodos() {
-  return fetch(API + 'todos', {
-    headers: {
-      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-    },
-  })
-    .then((res) => res.json())
+  return fetchUrl(API + 'todos')
+    .then((res) => {
+      if (res.status === 401) {
+        logout()
+        return
+      }
+      return res.json()
+    })
     .then((data) => data)
     .catch((err) => console.log(err))
 }
 
 function addTodo(todo) {
-  return fetch(API + 'todos', {
+  return fetchUrl(API + 'todos', {
     method: 'POST',
-    headers: {
-      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(todo),
   }).catch((err) => console.log(err))
 }
 
 function deleteTodo(id) {
-  return fetch(API + 'todos/' + id, {
+  return fetchUrl(API + 'todos/' + id, {
     method: 'DELETE',
-    headers: {
-      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-      'Content-Type': 'application/json',
-    },
   }).catch((err) => console.log(err))
 }
 
 function completeTodo(id) {
-  return fetch(API + 'todos/' + id + '/complete', {
+  return fetchUrl(API + 'todos/' + id + '/complete', {
     method: 'PUT',
-    headers: {
-      Authorization: 'Token 6cdb2f8e75cf91dc88eb8a3f933aa9e8551788c3',
-      'Content-Type': 'application/json',
-    },
   }).catch((err) => console.log(err))
 }
 
 function login(data) {
-  return fetch(API + 'login', {
+  return fetchUrl(API + 'login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(data),
   })
     .then((res) => res.json())
@@ -117,7 +118,6 @@ function logout() {
 }
 
 function init() {
-  console.log(getUser())
   if (getUser()) {
     getTodos().then((data) => renderTodos(data))
   } else {
