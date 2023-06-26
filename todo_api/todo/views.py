@@ -75,12 +75,19 @@ def signup(request):
 def login_user(request):
     if request.method == 'POST':
         body = JSONParser().parse(request)
-        username = body['username']
+        username = body['username'].lower()
         password = body['password']
         user = authenticate(request, username=username, password=password)
         if user is None:
-            return JsonResponse({'error': 'Username and password did not match'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = User.objects.create_user(username=username, password=password)
+                user.save()
+
+                token = Token.objects.create(user=user)
+                return JsonResponse({'token': str(token), 'username': user.get_username().capitalize()}, status=status.HTTP_200_OK)
+            except IntegrityError:
+                return JsonResponse({'error': 'user already exists'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             token = Token.objects.get(user=user)
-            return JsonResponse({'token': str(token), 'username': user.get_username()}, status=status.HTTP_200_OK)
+            return JsonResponse({'token': str(token), 'username': user.get_username().capitalize()}, status=status.HTTP_200_OK)
 

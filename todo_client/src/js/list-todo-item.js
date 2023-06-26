@@ -18,7 +18,39 @@ TodoSection.appendChild(TodoList)
 
 const API = 'http://localhost:8000/api/'
 
+function setUser(data) {
+  try {
+    localStorage.setItem('user', JSON.stringify(data))
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+function getUser() {
+  try {
+    const storedUser = localStorage.getItem('user')
+    const user = storedUser ? JSON.parse(storedUser) : null
+
+    return user
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+function removeUser() {
+  try {
+    localStorage.removeItem('user')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+function reload() {
+  window.location.reload()
+}
+
 function renderTodos(todoList = []) {
+  addTodoForm()
   const todos = todoList.map((todo) => createTodoItem(todo))
   TodoList.replaceChildren(...todos)
   renderTodosInfo(todoList)
@@ -66,8 +98,31 @@ function completeTodo(id) {
   }).catch((err) => console.log(err))
 }
 
+function login(data) {
+  return fetch(API + 'login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.json())
+    .then((data) => setUser(data))
+    .catch((err) => console.log(err))
+}
+
+function logout() {
+  removeUser()
+  reload()
+}
+
 function init() {
-  getTodos().then((data) => renderTodos(data))
+  console.log(getUser())
+  if (getUser()) {
+    getTodos().then((data) => renderTodos(data))
+  } else {
+    renderLoginForm()
+  }
 }
 
 init()

@@ -10,18 +10,20 @@ Input.setAttribute('placeholder', 'Enter Todo')
 
 Button.textContent = 'Add'
 
-app.appendChild(Form)
-Form.appendChild(Input)
-Form.appendChild(Button)
+function addTodoForm() {
+  app.prepend(Form)
+  Form.appendChild(Input)
+  Form.appendChild(Button)
 
-Form.addEventListener('submit', function (e) {
-  const TODOS = getTodos()
-  e.preventDefault()
-  const value = Input.value
+  Form.addEventListener('submit', function (e) {
+    const TODOS = getTodos()
+    e.preventDefault()
+    const value = Input.value
 
-  if (value.trim()) {
-    addTodo({ title: value, completed: false }).then(() => init())
-  }
+    if (value.trim()) {
+      addTodo({ title: value, completed: false }).then(() => init())
+    }
 
-  Input.value = ''
-})
+    Input.value = ''
+  })
+}
