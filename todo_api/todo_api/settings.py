@@ -64,7 +64,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:63342',
+    'http://localhost:3000',
 ]
 
 ROOT_URLCONF = 'todo_api.urls'

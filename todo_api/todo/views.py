@@ -6,6 +6,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.parsers import JSONParser
 from django.http import JsonResponse
+from django.contrib.auth import authenticate
 
 from .models import Todo
 from .serializers import TodoSerializer
@@ -70,5 +71,16 @@ def signup(request):
     else:
         return JsonResponse(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
+@csrf_exempt
+def login_user(request):
+    if request.method == 'POST':
+        body = JSONParser().parse(request)
+        username = body['username']
+        password = body['password']
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            return JsonResponse({'error': 'Username and password did not match'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            token = Token.objects.get(user=user)
+            return JsonResponse({'token': str(token), 'username': user.get_username()}, status=status.HTTP_200_OK)
 
